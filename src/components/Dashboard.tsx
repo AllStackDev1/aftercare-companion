@@ -16,51 +16,52 @@ import {
 import { BrochureViewer } from './BrochureViewer';
 import { BrochureDashboard } from './BrochureDashboard';
 import { SymptomTracker, SymptomEntry } from './SymptomTracker';
+import { trackersService } from '@/services/trackersService';
 import { NotesSection, Note } from './NotesSection';
+import { notesService } from '@/services/notesService';
 import { BrochureData, getBrochureById } from '@/data/brochureData';
 
 export const Dashboard = () => {
   const [selectedBrochure, setSelectedBrochure] = useState<BrochureData | null>(null);
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
   const [symptoms, setSymptoms] = useState<SymptomEntry[]>([]);
+  const [symptomsLoading, setSymptomsLoading] = useState(false);
   const [notes, setNotes] = useState<Note[]>([]);
+  const [notesLoading, setNotesLoading] = useState(false);
 
-  // Load data from localStorage on component mount
+  // Load notes from backend on mount
   useEffect(() => {
-    const savedCheckedItems = localStorage.getItem('checkedItems');
-    const savedSymptoms = localStorage.getItem('symptoms');
-    const savedNotes = localStorage.getItem('notes');
-
-    if (savedCheckedItems) {
-      setCheckedItems(new Set(JSON.parse(savedCheckedItems)));
-    }
-    if (savedSymptoms) {
-      setSymptoms(JSON.parse(savedSymptoms).map((s: any) => ({
-        ...s,
-        date: new Date(s.date)
-      })));
-    }
-    if (savedNotes) {
-      setNotes(JSON.parse(savedNotes).map((n: any) => ({
-        ...n,
-        createdAt: new Date(n.createdAt),
-        updatedAt: new Date(n.updatedAt)
-      })));
-    }
+    setNotesLoading(true);
+    notesService.getNotes()
+      .then(fetchedNotes => {
+        setNotes(
+          fetchedNotes.map(n => ({
+            ...n,
+            createdAt: new Date(n.createdAt),
+            updatedAt: new Date(n.updatedAt),
+          }))
+        );
+      })
+      .catch(() => setNotes([]))
+      .finally(() => setNotesLoading(false));
   }, []);
 
-  // Save data to localStorage whenever state changes
+  // Load symptoms from backend on mount
   useEffect(() => {
-    localStorage.setItem('checkedItems', JSON.stringify([...checkedItems]));
-  }, [checkedItems]);
-
-  useEffect(() => {
-    localStorage.setItem('symptoms', JSON.stringify(symptoms));
-  }, [symptoms]);
-
-  useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+    setSymptomsLoading(true);
+    trackersService.getTrackers()
+      .then(fetchedTrackers => {
+        setSymptoms(
+          fetchedTrackers.map(t => ({
+            ...t.data,
+            id: t.id,
+            date: new Date(t.data.date),
+          }))
+        );
+      })
+      .catch(() => setSymptoms([]))
+      .finally(() => setSymptomsLoading(false));
+  }, []);
 
   const handleItemCheck = (sectionId: string, itemId: string, checked: boolean) => {
     setCheckedItems(prev => {
@@ -74,32 +75,65 @@ export const Dashboard = () => {
     });
   };
 
-  const handleSymptomLog = (entry: Omit<SymptomEntry, 'id'>) => {
-    const newEntry: SymptomEntry = {
-      ...entry,
-      id: Date.now().toString()
-    };
-    setSymptoms(prev => [newEntry, ...prev]);
+  const handleSymptomLog = async (entry: Omit<SymptomEntry, 'id'>) => {
+    try {
+      const tracker = await trackersService.addTracker(entry);
+      setSymptoms(prev => [
+        {
+          ...tracker.data,
+          id: tracker.id,
+          date: new Date(tracker.data.date),
+        },
+        ...prev,
+      ]);
+    } catch (e) {
+      // handle error
+    }
   };
 
-  const handleNoteAdd = (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newNote: Note = {
-      ...note,
-      id: Date.now().toString(),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    setNotes(prev => [newNote, ...prev]);
+  const handleNoteAdd = async (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'userId'>) => {
+    try {
+      const newNote = await notesService.addNote(note);
+      setNotes(prev => [
+        {
+          ...newNote,
+          createdAt: new Date(newNote.createdAt),
+          updatedAt: new Date(newNote.updatedAt),
+        },
+        ...prev,
+      ]);
+    } catch (e) {
+      // handle error (e.g., show toast)
+    }
   };
 
-  const handleNoteUpdate = (id: string, updatedNote: Partial<Note>) => {
-    setNotes(prev => prev.map(note => 
-      note.id === id ? { ...note, ...updatedNote } : note
-    ));
+  const handleNoteUpdate = async (id: string, updatedNote: Partial<Note>) => {
+    try {
+      const updated = await notesService.updateNote(id, updatedNote);
+      setNotes(prev =>
+        prev.map(note =>
+          note.id === id
+            ? {
+                ...note,
+                ...updated,
+                createdAt: new Date(updated.createdAt),
+                updatedAt: new Date(updated.updatedAt),
+              }
+            : note
+        )
+      );
+    } catch (e) {
+      // handle error
+    }
   };
 
-  const handleNoteDelete = (id: string) => {
-    setNotes(prev => prev.filter(note => note.id !== id));
+  const handleNoteDelete = async (id: string) => {
+    try {
+      await notesService.deleteNote(id);
+      setNotes(prev => prev.filter(note => note.id !== id));
+    } catch (e) {
+      // handle error
+    }
   };
 
   const handleSelectBrochure = (brochure: BrochureData) => {

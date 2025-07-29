@@ -9,58 +9,56 @@ export interface AuthResponse {
   token: string;
 }
 
-// Mock implementation - replace with real API calls
 class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
-
+  private readonly API_URL = import.meta.env.VITE_API_URL + '/auth';
+  
   async login(email: string, password: string): Promise<AuthResponse> {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Mock validation
-    if (email === 'test@example.com' && password === 'password') {
-      const user: User = {
-        id: '1',
-        email: email,
-        name: 'Test User'
-      };
-      const token = 'mock_jwt_token';
-      
-      localStorage.setItem(this.TOKEN_KEY, token);
-      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-      
-      return { user, token };
+    console.log(import.meta.env);
+    const response = await fetch(`${this.API_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Login failed');
     }
-    
-    throw new Error('Invalid credentials');
+
+    const { user, token } = await response.json();
+    localStorage.setItem(this.TOKEN_KEY, token);
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+    return { user, token };
   }
 
   async signup(email: string, password: string, name: string): Promise<AuthResponse> {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const user: User = {
-      id: Date.now().toString(),
-      email: email,
-      name: name
-    };
-    const token = 'mock_jwt_token';
-    
+    const response = await fetch(`${this.API_URL}/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name })
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Signup failed');
+    }
+
+    const { user, token } = await response.json();
     localStorage.setItem(this.TOKEN_KEY, token);
     localStorage.setItem(this.USER_KEY, JSON.stringify(user));
-    
     return { user, token };
   }
 
   async getCurrentUser(): Promise<User | null> {
     const token = localStorage.getItem(this.TOKEN_KEY);
     const userData = localStorage.getItem(this.USER_KEY);
-    
+
     if (token && userData) {
       return JSON.parse(userData);
     }
-    
+
     return null;
   }
 
@@ -72,21 +70,6 @@ class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
-
-  // TODO: Replace with real API integration
-  // async login(email: string, password: string): Promise<AuthResponse> {
-  //   const response = await fetch('/api/auth/login', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ email, password })
-  //   });
-  //   
-  //   if (!response.ok) {
-  //     throw new Error('Login failed');
-  //   }
-  //   
-  //   return response.json();
-  // }
 }
 
 export const authService = new AuthService();
