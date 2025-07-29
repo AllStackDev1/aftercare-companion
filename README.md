@@ -1,287 +1,413 @@
-# Welcome to your Lovable project
+# Myomectomy Recovery Companion
 
-## Project info
+## Project Overview
+
+The **Myomectomy Recovery Companion** is a comprehensive web application designed to support patients during their post-operative recovery journey after abdominal myomectomy surgery. This digital healthcare companion provides personalized guidance, progress tracking, symptom monitoring, and educational resources to ensure a safe and informed recovery process.
 
 **URL**: https://lovable.dev/projects/37f7fb5e-8a70-47a6-b641-cd1883554d65
 
-## How can I edit this code?
+### Target Users
+- Patients recovering from abdominal myomectomy surgery
+- Healthcare providers monitoring patient progress
+- Caregivers supporting recovery journey
 
-There are several ways of editing your application.
+### Key Features
+- **Interactive Recovery Guide**: Step-by-step post-operative care instructions
+- **Symptom Tracker**: Medical symptom logging with warning alerts
+- **Progress Dashboard**: Visual recovery milestone tracking
+- **Personal Notes**: Patient journal for observations and questions
+- **Medical Brochure Integration**: Comprehensive post-op care guidelines
+- **Secure Authentication**: Protected patient data and progress
 
-**Use Lovable**
+## Technology Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/37f7fb5e-8a70-47a6-b641-cd1883554d65) and start prompting.
+This project is built with modern web technologies:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend Framework**: React 18 with TypeScript
+- **Build Tool**: Vite for fast development and optimized builds
+- **Styling**: Tailwind CSS with custom medical design system
+- **UI Components**: shadcn/ui for accessible, medical-grade interfaces
+- **State Management**: React Context for authentication and local state
+- **Form Handling**: React Hook Form with Zod validation
+- **Routing**: React Router DOM with protected routes
+- **Data Queries**: TanStack React Query for efficient data management
+- **Icons**: Lucide React for consistent iconography
+- **Date Handling**: date-fns for robust date manipulation
+- **Toast Notifications**: Sonner for user feedback
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## Authentication System Documentation
-
-This project includes a comprehensive authentication system that provides secure user management and route protection.
-
-### Overview
-
-The authentication system is built with a modular architecture that separates concerns between UI components, business logic, and data management. It's designed to be easily integrated with external APIs while providing a seamless user experience.
-
-### Architecture
+## Application Architecture
 
 ```
 src/
-├── contexts/
-│   └── AuthContext.tsx          # Global authentication state management
-├── services/
-│   └── authService.ts           # Authentication business logic and API integration
 ├── components/
-│   ├── AuthLayout.tsx           # Shared layout for authentication pages
-│   ├── AuthNavigation.tsx       # Navigation component with auth-aware rendering
-│   └── ProtectedRoute.tsx       # Route protection wrapper component
-└── pages/
-    ├── Login.tsx                # User login page
-    ├── Signup.tsx               # User registration page
-    └── ForgotPassword.tsx       # Password recovery page
+│   ├── ui/                      # shadcn/ui base components
+│   ├── AuthLayout.tsx           # Authentication page layout
+│   ├── AuthNavigation.tsx       # Navigation with auth state
+│   ├── BrochureViewer.tsx       # Interactive medical guide
+│   ├── Dashboard.tsx            # Main recovery dashboard
+│   ├── NotesSection.tsx         # Patient notes management
+│   ├── ProtectedRoute.tsx       # Route authentication guard
+│   └── SymptomTracker.tsx       # Medical symptom logging
+├── contexts/
+│   └── AuthContext.tsx          # Global authentication state
+├── data/
+│   └── brochureData.ts          # Medical recovery guidelines
+├── hooks/
+│   ├── use-mobile.tsx           # Mobile device detection
+│   └── use-toast.ts             # Toast notification hook
+├── lib/
+│   └── utils.ts                 # Utility functions
+├── pages/
+│   ├── Index.tsx                # Main application page
+│   ├── Login.tsx                # User authentication
+│   ├── Signup.tsx               # User registration
+│   ├── ForgotPassword.tsx       # Password recovery
+│   └── NotFound.tsx             # 404 error page
+├── services/
+│   └── authService.ts           # Authentication business logic
+└── main.tsx                     # Application entry point
 ```
 
-### Core Components
+## Core Features Documentation
 
-#### AuthContext (`src/contexts/AuthContext.tsx`)
-- **Purpose**: Centralized authentication state management using React Context
-- **Features**:
-  - User state management (authenticated user info)
-  - Loading states for async operations
-  - Authentication methods (login, signup, logout)
-  - Persistent authentication state across app reloads
+### 1. Recovery Dashboard (`src/components/Dashboard.tsx`)
 
-#### AuthService (`src/services/authService.ts`)
-- **Purpose**: Abstraction layer for authentication operations
-- **Features**:
-  - Mock authentication for development (easily replaceable with real API)
-  - Token management with localStorage
-  - User session persistence
-  - Type-safe interfaces for User and AuthResponse
+The central hub of the application providing:
 
-#### ProtectedRoute (`src/components/ProtectedRoute.tsx`)
-- **Purpose**: Automatically protect routes that require authentication
-- **Features**:
-  - Redirects unauthenticated users to login
-  - Preserves intended destination for post-login redirect
-  - Loading state handling during authentication checks
+- **Progress Overview**: Visual representation of recovery milestones
+- **Warning System**: Real-time alerts for concerning symptoms
+- **Tabbed Interface**: Easy navigation between features
+- **Data Persistence**: All progress saved to localStorage
 
-### Authentication Pages
+**Key Metrics Tracked**:
+- Recovery checklist completion percentage
+- Recent warning symptoms count
+- Daily symptom logs
+- Personal notes count
 
-#### Login Page (`src/pages/Login.tsx`)
-- **Features**:
-  - Form validation using React Hook Form + Zod
-  - Email and password fields with real-time validation
-  - "Remember me" functionality through persistent tokens
-  - Link to password recovery
-  - Link to registration page
-  - Demo credentials for testing (test@example.com / password)
+### 2. Interactive Recovery Guide (`src/components/BrochureViewer.tsx`)
 
-#### Signup Page (`src/pages/Signup.tsx`)
-- **Features**:
-  - User registration with name, email, and password
-  - Password confirmation validation
-  - Form validation using React Hook Form + Zod
-  - Automatic login after successful registration
-  - Link to login page for existing users
+Comprehensive post-operative care instructions featuring:
 
-#### Forgot Password Page (`src/pages/ForgotPassword.tsx`)
-- **Features**:
-  - Email-based password recovery
-  - Form validation for email format
-  - Success/error feedback
-  - Navigation back to login
+- **Checkable Items**: Interactive task completion tracking
+- **Medical Categories**: Organized by care areas (activity, diet, medications)
+- **Visual Indicators**: Color-coded items by importance and type
+- **Progress Tracking**: Automatic completion percentage calculation
 
-### Security Features
+### 3. Symptom Tracker (`src/components/SymptomTracker.tsx`)
 
-1. **Form Validation**: All authentication forms use Zod schemas for type-safe validation
-2. **Error Handling**: Comprehensive error states with user-friendly messages
-3. **Loading States**: Visual feedback during authentication operations
-4. **Token Management**: Secure token storage and retrieval
-5. **Route Protection**: Automatic redirection for unauthorized access attempts
+Medical-grade symptom monitoring system:
 
-### User Experience Features
+- **Structured Logging**: Date, time, and detailed symptom recording
+- **Warning Alerts**: Automatic flagging of concerning symptoms
+- **Severity Tracking**: Multi-level symptom intensity recording
+- **Historical View**: Complete symptom timeline for medical review
 
-1. **Responsive Design**: Mobile-first approach with medical-themed styling
-2. **Toast Notifications**: Real-time feedback for user actions
-3. **Loading Indicators**: Visual feedback during async operations
-4. **Form State Management**: Proper handling of form errors and success states
-5. **Navigation Flow**: Seamless transitions between authentication states
+**Warning Symptoms Include**:
+- Heavy bleeding or unusual discharge
+- Severe abdominal pain
+- Signs of infection (fever, chills)
+- Breathing difficulties
 
-### Integration with External APIs
+### 4. Personal Notes System (`src/components/NotesSection.tsx`)
 
-The authentication system is designed for easy integration with external backends:
+Patient journal and communication tool:
 
-#### Current Implementation (Mock)
+- **Rich Text Editing**: Comprehensive note-taking capabilities
+- **Medical Questions**: Structured question logging for doctor visits
+- **Progress Observations**: Personal recovery milestone documentation
+- **CRUD Operations**: Full create, read, update, delete functionality
+
+### 5. Authentication System
+
+Comprehensive user management with:
+
+- **Secure Login/Signup**: Form validation and error handling
+- **Route Protection**: Automatic redirection for unauthorized access
+- **Session Management**: Persistent authentication state
+- **Password Recovery**: Email-based password reset functionality
+
+**Testing Credentials**:
+- Email: test@example.com
+- Password: password
+
+## Medical Content & Data Structure
+
+### Brochure Data (`src/data/brochureData.ts`)
+
+Structured medical guidance with:
+
 ```typescript
-// Mock authentication - development only
-async login(email: string, password: string): Promise<AuthResponse> {
-  // Simulated API call with localStorage
+interface BrochureItem {
+  text: string;
+  type?: 'warning' | 'info' | 'success';
+  checkable?: boolean;
+}
+
+interface BrochureSection {
+  title: string;
+  icon?: string;
+  items: BrochureItem[];
 }
 ```
 
-#### Production Implementation (Ready to uncomment)
+**Current Medical Content**:
+- Pre-surgery preparation guidelines
+- Post-operative care instructions
+- Activity restrictions and timelines
+- Medication management
+- Warning signs and emergency procedures
+- Follow-up care requirements
+
+### Data Persistence Strategy
+
+All user data is stored locally using localStorage:
+
+- **Checked Items**: Recovery task completion state
+- **Symptoms**: Complete symptom history with timestamps
+- **Notes**: Personal observations and questions
+- **Authentication**: User session and token management
+
+## Design System & User Experience
+
+### Medical Design Theme
+
+Professional healthcare-focused design featuring:
+
+- **Color Palette**: Medical-inspired blues and whites
+- **Typography**: Clear, readable fonts optimized for medical content
+- **Responsive Design**: Mobile-first approach for accessibility
+- **Accessibility**: WCAG compliant with screen reader support
+
+### Custom Tailwind Configuration
+
 ```typescript
-// Real API integration - production ready
+// tailwind.config.ts
+extend: {
+  colors: {
+    medical: {
+      50: 'hsl(210, 100%, 98%)',
+      600: 'hsl(210, 100%, 45%)',
+      // Additional medical color scheme
+    }
+  }
+}
+```
+
+### Component Styling Guidelines
+
+- Semantic color tokens from design system
+- Consistent spacing and typography scale
+- Medical-grade contrast ratios
+- Professional, calming aesthetic
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18+ and npm (install with [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- Git for version control
+
+### Installation
+
+```sh
+# Clone the repository
+git clone <YOUR_GIT_URL>
+
+# Navigate to project directory
+cd <YOUR_PROJECT_NAME>
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Available Scripts
+
+```sh
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript type checking
+```
+
+### Development Tools
+
+- **Hot Module Replacement**: Instant code updates during development
+- **TypeScript**: Full type safety and IntelliSense
+- **ESLint**: Code quality and consistency enforcement
+- **Prettier**: Automated code formatting
+
+## Project Management & Editing
+
+### Lovable Integration
+
+**Primary Development**: [Lovable Project](https://lovable.dev/projects/37f7fb5e-8a70-47a6-b641-cd1883554d65)
+- Real-time collaborative editing
+- Automatic deployment pipeline
+- Visual component editing
+- AI-powered development assistance
+
+### Alternative Development Methods
+
+**Local IDE Development**:
+- Clone repository for local development
+- Push changes automatically sync to Lovable
+- Full Git workflow support
+
+**GitHub Integration**:
+- Direct file editing in GitHub interface
+- GitHub Codespaces support for browser-based development
+- Automated CI/CD pipeline
+
+## Deployment & Production
+
+### Deployment Process
+
+1. **Lovable Deployment**: Click Share → Publish in Lovable interface
+2. **Custom Domain**: Connect via Project → Settings → Domains
+3. **Environment Configuration**: Production-ready build optimization
+
+### Production Considerations
+
+- **Authentication**: Ready for real API integration
+- **Data Storage**: Can be upgraded to database storage
+- **Security**: HTTPS enforced, secure token management
+- **Performance**: Optimized bundle size and loading
+
+## Medical Compliance & Safety
+
+### Safety Features
+
+- **Warning Systems**: Real-time alerts for dangerous symptoms
+- **Medical Accuracy**: Content reviewed for post-operative care
+- **Emergency Guidance**: Clear instructions for urgent situations
+- **Professional Disclaimer**: Appropriate medical disclaimers
+
+### Data Privacy
+
+- **Local Storage**: Patient data remains on device
+- **No External Tracking**: Privacy-focused design
+- **Secure Authentication**: Protected user sessions
+- **HIPAA Considerations**: Foundation for compliance-ready deployment
+
+## Future Enhancements & Roadmap
+
+### Short-term Improvements
+
+1. **Enhanced Symptom Tracking**: Photo uploads for wound monitoring
+2. **Medication Reminders**: Automated pill scheduling
+3. **Doctor Communication**: Secure messaging integration
+4. **Progress Photos**: Visual recovery documentation
+
+### Long-term Features
+
+1. **API Integration**: Real healthcare system connectivity
+2. **Multi-language Support**: Internationalization for broader access
+3. **Wearable Integration**: Fitness tracker and health monitor sync
+4. **Telemedicine**: Video consultation integration
+5. **Machine Learning**: Personalized recovery predictions
+6. **Family Access**: Caregiver dashboard and updates
+
+### Technical Scalability
+
+1. **Database Migration**: Transition from localStorage to cloud storage
+2. **Real-time Sync**: Multi-device synchronization
+3. **Offline Support**: Progressive Web App capabilities
+4. **Push Notifications**: Mobile app reminder system
+5. **Analytics Dashboard**: Healthcare provider insights
+
+## API Integration Readiness
+
+### Current Mock Implementation
+
+Development uses localStorage-based mock services that simulate real API behavior:
+
+```typescript
+// Current development setup
+const mockUser = { id: '1', email: 'test@example.com', name: 'Test User' };
+localStorage.setItem('auth_user', JSON.stringify(mockUser));
+```
+
+### Production API Integration
+
+Ready for real backend integration with minimal code changes:
+
+```typescript
+// Production-ready API calls
 async login(email: string, password: string): Promise<AuthResponse> {
   const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-  
-  if (!response.ok) {
-    throw new Error('Login failed');
-  }
-  
   return response.json();
 }
 ```
 
-### Usage Examples
+### Integration Requirements
 
-#### Protecting a Route
-```tsx
-import ProtectedRoute from '@/components/ProtectedRoute';
+1. **Authentication Endpoints**: Login, signup, password reset, token refresh
+2. **User Data Endpoints**: Profile management, preferences
+3. **Medical Data Endpoints**: Symptoms, notes, progress tracking
+4. **File Upload**: Image and document storage for medical records
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-      </Routes>
-    </Router>
-  );
-}
-```
+## Testing & Quality Assurance
 
-#### Using Authentication Context
-```tsx
-import { useAuth } from '@/contexts/AuthContext';
+### Current Testing Strategy
 
-function UserProfile() {
-  const { user, logout, isAuthenticated } = useAuth();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-  
-  return (
-    <div>
-      <h1>Welcome, {user?.name}!</h1>
-      <button onClick={logout}>Sign Out</button>
-    </div>
-  );
-}
-```
+- **Manual Testing**: Comprehensive user journey testing
+- **Cross-browser Compatibility**: Modern browser support
+- **Responsive Testing**: Mobile, tablet, desktop verification
+- **Accessibility Testing**: Screen reader and keyboard navigation
 
-### Styling and Theming
+### Quality Metrics
 
-The authentication system uses a consistent design language:
-- **Medical Theme**: Professional healthcare-focused color scheme
-- **Tailwind CSS**: Utility-first CSS framework for responsive design
-- **shadcn/ui**: High-quality, accessible UI components
-- **Custom Color Palette**: Medical-inspired colors (medical-50, medical-600, etc.)
+- **Performance**: Lighthouse score optimization
+- **Accessibility**: WCAG 2.1 AA compliance target
+- **Security**: OWASP security guidelines
+- **Medical Accuracy**: Healthcare professional content review
 
-### Development vs Production
+## Contributing Guidelines
 
-#### Development Features
-- Mock authentication with predefined test credentials
-- localStorage-based session management
-- Console logging for debugging
-- Simulated API delays for realistic testing
+### Code Standards
 
-#### Production Readiness
-- Easy API endpoint configuration
-- Token-based authentication ready
-- Error handling for network failures
-- Security best practices implemented
+- **TypeScript**: Strict type checking enabled
+- **ESLint**: Airbnb configuration with medical app customizations
+- **Component Structure**: Single responsibility principle
+- **Medical Accuracy**: All medical content requires professional review
 
-### Future Enhancements
+### Development Workflow
 
-The system is designed to easily accommodate:
-1. **OAuth Integration**: Social login with Google, GitHub, etc.
-2. **Multi-factor Authentication**: SMS or email-based 2FA
-3. **Role-based Access Control**: User permissions and roles
-4. **Session Management**: Advanced session handling and refresh tokens
-5. **Password Policies**: Configurable password requirements
-6. **Account Management**: Profile updates, password changes, account deletion
+1. **Feature Branches**: All new features in separate branches
+2. **Code Review**: Peer review required for medical content
+3. **Testing**: Manual testing of all user journeys
+4. **Documentation**: Update README for significant changes
 
-### Testing Credentials
+## Support & Resources
 
-For development and testing:
-- **Email**: test@example.com
-- **Password**: password
+### Documentation Links
 
-### API Integration Notes
+- [Lovable Documentation](https://docs.lovable.dev/)
+- [React Documentation](https://react.dev/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui Components](https://ui.shadcn.com/)
 
-When integrating with a backend API:
-1. Update the `authService.ts` endpoints to match your API
-2. Configure proper CORS settings on your backend
-3. Implement proper error handling for network failures
-4. Set up refresh token logic if using JWT
-5. Configure secure HTTP-only cookies for production
+### Community & Support
 
-This authentication system provides a solid foundation for any React application requiring user management, with the flexibility to scale from a simple prototype to a production-ready application.
+- [Lovable Discord Community](https://discord.com/channels/1119885301872070706/1280461670979993613)
+- [Medical App Development Best Practices](https://docs.lovable.dev/)
 
-## How can I deploy this project?
+## License & Legal
 
-Simply open [Lovable](https://lovable.dev/projects/37f7fb5e-8a70-47a6-b641-cd1883554d65) and click on Share -> Publish.
+- **Code License**: MIT License for application code
+- **Medical Content**: Professional medical review required
+- **Disclaimer**: Not a substitute for professional medical advice
+- **Privacy**: Local-first data storage for patient privacy
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+*This application is designed to support patient recovery but should not replace professional medical advice. Always consult with healthcare providers for medical decisions.*
