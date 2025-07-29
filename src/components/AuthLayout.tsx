@@ -15,7 +15,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
         <div className="text-center">
           <Link to="/" className="inline-flex items-center gap-2 text-medical-600 hover:text-medical-700 transition-colors">
             <Heart className="h-8 w-8" />
-            <span className="text-2xl font-bold">Myomectomy Care</span>
+            <span className="text-2xl font-bold">Medical Care Guides</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">{title}</h2>
           <p className="mt-2 text-sm text-gray-600">{subtitle}</p>

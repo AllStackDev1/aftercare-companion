@@ -4,8 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { AlertTriangle, AlertCircle, CheckCircle, Info, Calendar, Activity, Clock, Pill, Shield, Utensils } from 'lucide-react';
-import { myomectomyBrochure, BrochureSection, BrochureItem } from '@/data/brochureData';
+import { AlertTriangle, AlertCircle, CheckCircle, Info, Calendar, Activity, Clock, Pill, Shield, Utensils, ArrowLeft } from 'lucide-react';
+import { BrochureData, BrochureSection, BrochureItem } from '@/data/brochureData';
 
 const iconMap = {
   Calendar,
@@ -19,12 +19,14 @@ const iconMap = {
 };
 
 interface BrochureViewerProps {
+  brochure: BrochureData;
   onItemCheck?: (sectionId: string, itemId: string, checked: boolean) => void;
   checkedItems?: Set<string>;
+  onBack?: () => void;
 }
 
-export const BrochureViewer = ({ onItemCheck, checkedItems = new Set() }: BrochureViewerProps) => {
-  const [selectedSection, setSelectedSection] = useState<string>(myomectomyBrochure.sections[0].id);
+export const BrochureViewer = ({ brochure, onItemCheck, checkedItems = new Set(), onBack }: BrochureViewerProps) => {
+  const [selectedSection, setSelectedSection] = useState<string>(brochure.sections[0]?.id || '');
 
   const getItemIcon = (item: BrochureItem) => {
     switch (item.type) {
@@ -52,20 +54,35 @@ export const BrochureViewer = ({ onItemCheck, checkedItems = new Set() }: Brochu
     }
   };
 
-  const currentSection = myomectomyBrochure.sections.find(s => s.id === selectedSection);
+  const currentSection = brochure.sections.find(s => s.id === selectedSection);
 
   return (
+    <div className="space-y-6">
+      {/* Header with Back Button */}
+      {onBack && (
+        <div className="flex items-center gap-4">
+          <Button variant="outline" onClick={onBack} className="flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Guides
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">{brochure.title}</h1>
+            <p className="text-muted-foreground">{brochure.description}</p>
+          </div>
+        </div>
+      )}
+      
     <div className="flex flex-col lg:flex-row gap-6 h-full">
       {/* Section Navigation */}
       <div className="lg:w-1/3">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Recovery Guide</CardTitle>
+            <CardTitle className="text-lg">{brochure.title}</CardTitle>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[400px] lg:h-[600px]">
               <div className="space-y-2">
-                {myomectomyBrochure.sections.map((section) => {
+                {brochure.sections.map((section) => {
                   const Icon = iconMap[section.icon as keyof typeof iconMap];
                   return (
                     <Button
@@ -148,6 +165,7 @@ export const BrochureViewer = ({ onItemCheck, checkedItems = new Set() }: Brochu
           </Card>
         )}
       </div>
+    </div>
     </div>
   );
 };

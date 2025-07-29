@@ -36,7 +36,7 @@ export default function AuthNavigation() {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center gap-2">
             <Heart className="h-6 w-6 text-medical-600" />
-            <span className="text-xl font-bold text-gray-900">Myomectomy Care</span>
+            <span className="text-xl font-bold text-gray-900">Medical Care Guides</span>
           </Link>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-600">

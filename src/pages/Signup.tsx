@@ -42,7 +42,7 @@ export default function Signup() {
       await signup(data.email, data.password, data.name);
       toast({
         title: "Account created!",
-        description: "Welcome to Myomectomy Care. Your recovery journey starts here.",
+        description: "Welcome to Medical Care Guides. Your recovery journey starts here.",
       });
       navigate('/', { replace: true });
     } catch (error) {
